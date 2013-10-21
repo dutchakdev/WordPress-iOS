@@ -15,6 +15,7 @@
 #import "WPWebViewController.h"
 #import "SoundUtil.h"
 #import "WPInfoView.h"
+#import "ContextManager.h"
 
 NSTimeInterval const WPTableViewControllerRefreshTimeout = 300; // 5 minutes
 
@@ -896,7 +897,7 @@ NSTimeInterval const WPTableViewControllerRefreshTimeout = 300; // 5 minutes
 	if (self.blog) {
         return self.blog.managedObjectContext;
     } else {
-        return [[WordPressAppDelegate sharedWordPressApplicationDelegate] managedObjectContext];
+        return [[ContextManager sharedInstance] mainContext];
     }
 }
 

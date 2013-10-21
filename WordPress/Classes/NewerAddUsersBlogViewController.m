@@ -16,6 +16,7 @@
 #import "WPAccount.h"
 #import "NSString+XMLExtensions.h"
 #import "WordPressAppDelegate.h"
+#import "ContextManager.h"
 
 @interface NewerAddUsersBlogViewController () <UITableViewDataSource, UITableViewDelegate> {
     UIView *_mainTextureView;
@@ -220,11 +221,7 @@
 		}
 	}
     
-    NSError *error;
-    [[WordPressAppDelegate sharedWordPressApplicationDelegate].managedObjectContext save:&error];
-    if (error != nil) {
-        DDLogVerbose(@"Error adding blogs: %@", [error localizedDescription]);
-    }
+    [[ContextManager sharedInstance] saveMainContext];
     
     if (self.blogAdditionCompleted) {
         self.blogAdditionCompleted(self);

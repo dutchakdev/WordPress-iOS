@@ -52,9 +52,6 @@
 @property (nonatomic, assign) BOOL isUploadingPost;
 @property (nonatomic, strong) Blog *currentBlog;
 @property (nonatomic, strong) NSString *postID;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, strong, readonly) NSManagedObjectModel *managedObjectModel;
-@property (nonatomic, strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (nonatomic, strong) PanelNavigationController *panelNavigationController;
 @property (strong, nonatomic) DDFileLogger *fileLogger;
 
@@ -63,7 +60,6 @@
 @property (nonatomic, strong) Reachability *internetReachability, *wpcomReachability, *currentBlogReachability;
 @property (nonatomic, assign) BOOL connectionAvailable, wpcomAvailable, currentBlogAvailable;
 
-- (NSString *)applicationDocumentsDirectory;
 - (NSString *)applicationUserAgent;
 
 + (WordPressAppDelegate *)sharedWordPressApplicationDelegate;
