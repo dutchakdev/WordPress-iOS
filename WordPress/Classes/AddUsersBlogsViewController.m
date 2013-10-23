@@ -15,6 +15,7 @@
 #import "UIImageView+Gravatar.h"
 #import "WPAccount.h"
 #import "ContextManager.h"
+#import "SupportViewController.h"
 
 @interface AddUsersBlogsViewController() <CreateWPComBlogViewControllerDelegate>
 
@@ -509,14 +510,13 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 0) {
-        HelpViewController *helpViewController = [[HelpViewController alloc] init];
+        SupportViewController *supportViewController = [[SupportViewController alloc] init];
 
         if (IS_IPAD) {
-            helpViewController.isBlogSetup = YES;
-            [self.navigationController pushViewController:helpViewController animated:YES];
+            [self.navigationController pushViewController:supportViewController animated:YES];
+        } else {
+            [appDelegate.navigationController presentViewController:supportViewController animated:YES completion:nil];
         }
-        else
-            [appDelegate.navigationController presentViewController:helpViewController animated:YES completion:nil];
     }
 
     if (failureAlertView == alertView) {

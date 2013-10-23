@@ -32,6 +32,7 @@
 #import "UIColor+Helpers.h"
 #import <Security/Security.h>
 #import "ContextManager.h"
+#import "SupportViewController.h"
 
 @interface WordPressAppDelegate (Private) <CrashlyticsDelegate>
 
@@ -191,26 +192,12 @@ int ddLogLevel = LOG_LEVEL_INFO;
     UIDevice *device = [UIDevice currentDevice];
     NSInteger crashCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"crashCount"];
 
+    [self configureLogging];
     [self configureCrashlytics];
-
-    // Sets up the CocoaLumberjack logging; debug output to console and file
-#ifdef DEBUG
-    [DDLog addLogger:[DDASLLogger sharedInstance]];
-    [DDLog addLogger:[DDTTYLogger sharedInstance]];
-#endif
-
-    self.fileLogger = [[DDFileLogger alloc] init];
-    self.fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling
-    self.fileLogger.logFileManager.maximumNumberOfLogFiles = 7;
-    [DDLog addLogger:self.fileLogger];
 
     NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
     NSString *currentLanguage = [languages objectAtIndex:0];
-
     BOOL extraDebug = [[NSUserDefaults standardUserDefaults] boolForKey:@"extra_debug"];
-    if (extraDebug) {
-        ddLogLevel = LOG_LEVEL_VERBOSE;
-    }
     
     DDLogInfo(@"===========================================================================");
 	DDLogInfo(@"Launching WordPress for iOS %@...", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]);
@@ -528,6 +515,35 @@ int ddLogLevel = LOG_LEVEL_INFO;
 
 #pragma mark -
 #pragma mark Private Methods
+
+- (void)configureLogging
+{
+    // Remove the old Documents/wordpress.log if it exists
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"wordpress.log"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    if ([fileManager fileExistsAtPath:filePath]) {
+        [fileManager removeItemAtPath:filePath error:nil];
+    }
+    
+    // Sets up the CocoaLumberjack logging; debug output to console and file
+#ifdef DEBUG
+    [DDLog addLogger:[DDASLLogger sharedInstance]];
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
+#endif
+    
+    self.fileLogger = [[DDFileLogger alloc] init];
+    self.fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling
+    self.fileLogger.logFileManager.maximumNumberOfLogFiles = 7;
+    [DDLog addLogger:self.fileLogger];
+    
+    BOOL extraDebug = [[NSUserDefaults standardUserDefaults] boolForKey:@"extra_debug"];
+    if (extraDebug) {
+        ddLogLevel = LOG_LEVEL_VERBOSE;
+    }
+}
 
 - (void)customizeAppearance {
     if (IS_IOS7) {
@@ -1041,8 +1057,8 @@ int ddLogLevel = LOG_LEVEL_INFO;
 		//Need Help Alert
 		switch(buttonIndex) {
 			case 0: {
-				HelpViewController *helpViewController = [[HelpViewController alloc] init];
-                UINavigationController *aNavigationController = [[UINavigationController alloc] initWithRootViewController:helpViewController];
+				SupportViewController *supportViewController = [[SupportViewController alloc] init];
+                UINavigationController *aNavigationController = [[UINavigationController alloc] initWithRootViewController:supportViewController];
                 aNavigationController.navigationBar.translucent = NO;
                 if (IS_IPAD) {
                     aNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
